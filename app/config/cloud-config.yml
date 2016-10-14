@@ -12,5 +12,5 @@ coreos:
     - name: fleet.service
       command: start
 ssh_authorized_keys:
-  - ssh-rsa %(rsa_public_key)
+  - %(rsa_public_key)s
 hostname: coreos-%(client_ip_dash)s

@@ -15,6 +15,7 @@ rsa_public_key = sys.argv[4]
 
 try:
     with open(work_dir + "/" + ETCD_TOKEN_FILE, "r") as f:
+        print("Using existent discovery token")
         etcd_discovery_token = f.read()
 except FileNotFoundError:
     with open(work_dir + "/" + ETCD_TOKEN_FILE, "w") as f:
@@ -24,6 +25,7 @@ except FileNotFoundError:
         f.write(etcd_discovery_token)
 
 print("etcd discovery token: %s" % etcd_discovery_token)
+print("ssh public key: %s" % rsa_public_key)
 
 class PxeHandler(http.server.SimpleHTTPRequestHandler):
 
