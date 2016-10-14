@@ -47,5 +47,12 @@ ssh core@<ip>
 ```
 
 
+### Switching to Cloud-Powered service:
+
+Login to first node and execute
+
+```
+fleetctl start /app/coreos-pxe.service
+```
 
 
