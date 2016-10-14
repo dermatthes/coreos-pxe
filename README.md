@@ -21,7 +21,7 @@ This docker image will:
 - offer the pxe-images per tftp for network-booting
 - provide a configuration-webservice on port 888
 - distribute your ssh public-key to all the nodes
-
+- Will be started on as fleet-service inside the cluster so there is no single point of failure.
 
 ## Running the Image
 
