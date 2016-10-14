@@ -49,10 +49,12 @@ ssh core@<ip>
 
 ### Switching to Cloud-Powered service:
 
-Login to first node and execute
+Login to first node and execute (as root)
 
 ```
-fleetctl start /app/coreos-pxe.service
+fleetctl start /bootpxe/coreos-pxe.service
 ```
 
+After that you can turn off your initial pxe node and reboot in pxe-mode
+to join the cluster.
 
