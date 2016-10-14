@@ -24,6 +24,7 @@ except FileNotFoundError:
         f.write(etcd_discovery_token)
 
 print("etcd discovery token: %s" % etcd_discovery_token)
+print("ssh public key: %s" % rsa_public_key)
 
 class PxeHandler(http.server.SimpleHTTPRequestHandler):
 
