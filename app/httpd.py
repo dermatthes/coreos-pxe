@@ -15,6 +15,7 @@ rsa_public_key = sys.argv[4]
 
 try:
     with open(work_dir + "/" + ETCD_TOKEN_FILE, "r") as f:
+        print("Using existent discovery token")
         etcd_discovery_token = f.read()
 except FileNotFoundError:
     with open(work_dir + "/" + ETCD_TOKEN_FILE, "w") as f:
