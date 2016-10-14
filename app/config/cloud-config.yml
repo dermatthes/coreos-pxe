@@ -13,4 +13,12 @@ coreos:
       command: start
 ssh_authorized_keys:
   - %(rsa_public_key)s
+
+write_files:
+  - path: "/app/config/etcd_discovery_token"
+    content: %(etcd_discovery_token)s
+write_files:
+  - path: "/app/rsa_public_key"
+    content: %(rsa_public_key)s
+
 hostname: coreos-%(client_ip_dash)s
