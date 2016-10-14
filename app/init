@@ -22,9 +22,9 @@ chmod a+r /app/tftp/pxelinux.cfg/*
 # Update pxelinux config to point real server ip
 sed -i -e s/%\(server_ip\)s/$pxe_server_ip/ /app/tftp/pxelinux.cfg/*
 
-echo "Starting python cloudconfig webserver"
+echo "Starting python cloudconfig webserver (make sure to block outside requests to port 888)"
 # Start http server to host cloud.config
-python3 -u /app/httpd.py /app/config $pxe_server_ip 80 "$rsa_public_key" &
+python3 -u /app/httpd.py /app/config $pxe_server_ip 888 "$rsa_public_key" &
 
 # Download image
 if [ ! -d /config/images ];then

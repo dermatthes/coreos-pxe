@@ -16,7 +16,11 @@ CoreOS und builds the cluster without any harddrives needed.
 ## Running the Image
 
 ```
-docker run --net=host -v ~/.ssh/id_rsa.pub:/app/rsa_public_key leuffen/coreos-pxe
+docker run --net=host -e INTERFACE=eth2 -v /root/.ssh/id_rsa.pub:/app/rsa_public_key --name corepxe a24f01c32d3c
 ```
+
+Deleteing the image
+
+
 
 
