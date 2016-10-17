@@ -41,7 +41,8 @@ python3 -u -m http.server 3000 &
 
 # Start dnsmasq as dhcp proxy to $pxe_server_ip
 
-if [$MODE = 'JOIN']
+if [ $MODE = 'JOIN' ]
+then
     echo "MODE SELECT: JOIN MODE!"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
@@ -54,7 +55,8 @@ if [$MODE = 'JOIN']
         --no-daemon
 fi
 
-if [$MODE = 'BOOTSTRAP']
+if [ $MODE = 'BOOTSTRAP' ]
+then
     echo "MODE SELECT: BOOTSTRAP MODE! (new cluster only!)"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
