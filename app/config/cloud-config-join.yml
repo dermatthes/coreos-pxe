@@ -1,0 +1,48 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    # skip discovery token
+    discovery: ""
+    advertise-client-urls: "http://%(client_ip)s:2379"
+    initial-advertise-peer-urls: "http://%(client_ip)s:2380"
+    # listen on both the official ports and the legacy ports
+    # legacy ports can be omitted if your application doesn't depend on them
+    listen-client-urls: "http://0.0.0.0:2379,http://0.0.0.0:4001"
+    listen-peer-urls: "http://%(client_ip)s:2380,http://%(client_ip)s:7001"
+    initial-cluster: "infra0=http://%(server_ip)s:2380"
+    initial-cluster-state: "existing"
+    name: "coreos-%(client_ip_dash)s"
+  
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+ssh_authorized_keys:
+  - %(rsa_public_key)s
+
+write_files:
+  - path: "/bootpxe/etcd_discovery_token"
+    content: %(etcd_discovery_token)s
+write_files:
+  - path: "/bootpxe/rsa_public_key"
+    content: %(rsa_public_key)s
+write_files:
+  - path: "/bootpxe/coreos-pxe.service"
+    content: |
+      [Unit]
+      Description=CoreOSPxeAnnouncing
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      TimeoutStartSec=0
+      ExecStartPre=-/usr/bin/docker kill coreos-pxe
+      ExecStartPre=-/usr/bin/docker rm coreos-pxe
+      ExecStartPre=/usr/bin/docker pull dermatthes/coreos-pxe
+      ExecStart=/usr/bin/docker run --net=host -e INTERFACE=enp8s0 -v /bootpxe/rsa_public_key:/app/rsa_public_key -v /bootpxe/etcd_discovery_token:/app/config/etcd_discovery_token --name coreos-pxe dermatthes/coreos-pxe
+      ExecStop=/usr/bin/docker stop coreos-pxe
+
+
+hostname: coreos-%(client_ip_dash)s

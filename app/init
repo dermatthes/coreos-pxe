@@ -40,14 +40,30 @@ cd /config/images
 python3 -u -m http.server 3000 &
 
 # Start dnsmasq as dhcp proxy to $pxe_server_ip
-dnsmasq \
-    --dhcp-range=$pxe_server_ip,proxy \
-    --dhcp-no-overrid \
-    --dhcp-boot=pxelinux.0,pxeserver,$pxe_server_ip \
-    --pxe-service=x86PC,"Install CoreOS",pxelinux \
-    --enable-tftp \
-    --tftp-root=/app/tftp \
-    --user=root \
-    --no-daemon
 
+if [$MODE = 'JOIN']
+    echo "MODE SELECT: JOIN MODE!"
+    dnsmasq \
+        --dhcp-range=$pxe_server_ip,proxy \
+        --dhcp-no-overrid \
+        --dhcp-boot=pxelinux.0,pxeserver,$pxe_server_ip \
+        --pxe-service=x86PC,"Join existing CoreOS Cluster",pxejoin \
+        --enable-tftp \
+        --tftp-root=/app/tftp \
+        --user=root \
+        --no-daemon
+fi
+
+if [$MODE = 'BOOTSTRAP']
+    echo "MODE SELECT: BOOTSTRAP MODE! (new cluster only!)"
+    dnsmasq \
+        --dhcp-range=$pxe_server_ip,proxy \
+        --dhcp-no-overrid \
+        --dhcp-boot=pxebootstrap.0,pxeserver,$pxe_server_ip \
+        --pxe-service=x86PC,"Bootstrap CoreOS Cluster",pxebootstrap \
+        --enable-tftp \
+        --tftp-root=/app/tftp \
+        --user=root \
+        --no-daemon
+fi
 

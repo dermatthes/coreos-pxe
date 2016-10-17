@@ -34,7 +34,7 @@ Start the PXE-Service:
 
 ```
 docker pull dermatthes/coreos-pxe
-docker run --net=host -e INTERFACE=eth2 -v /root/.ssh/id_rsa.pub:/app/rsa_public_key --name corepxe dermatthes/coreos-pxe
+docker run --net=host -e MODE=BOOTSTRAP -e INTERFACE=eth2 -v /root/.ssh/id_rsa.pub:/app/rsa_public_key --name corepxe dermatthes/coreos-pxe
 ```
 
 Then start the first node. Wait until its online. You'll see the 
@@ -58,3 +58,18 @@ fleetctl start /bootpxe/coreos-pxe.service
 After that you can turn off your initial pxe node and reboot in pxe-mode
 to join the cluster.
 
+
+### Monitoring
+
+Monitoring the cluster health
+
+```
+etcdctl cluster-health
+etcdctl member list
+```
+
+remove a failed node
+
+```
+etcdctl member remove <id>
+```
