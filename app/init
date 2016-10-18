@@ -61,8 +61,8 @@ then
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
         --dhcp-no-overrid \
-        --dhcp-boot=pxebootstrap.0,pxeserver,$pxe_server_ip \
-        --pxe-service=x86PC,"Bootstrap CoreOS Cluster",pxebootstrap \
+        --dhcp-boot=pxelinux.0,bootstrap,$pxe_server_ip \
+        --pxe-service=x86PC,"Bootstrap CoreOS Cluster",bootstrap \
         --enable-tftp \
         --tftp-root=/app/tftp \
         --user=root \
