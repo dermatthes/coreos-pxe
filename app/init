@@ -43,7 +43,7 @@ python3 -u -m http.server 3000 &
 
 if [ $MODE = 'JOIN' ]
 then
-    ln -s /app/tftp/pxelinux.cfg/bootstrap /app/tftp/pxelinux.cfg/default
+    ln -s /app/tftp/pxelinux.cfg/join /app/tftp/pxelinux.cfg/default
     echo "MODE SELECT: JOIN MODE!"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
@@ -58,7 +58,7 @@ fi
 
 if [ $MODE = 'BOOTSTRAP' ]
 then
-    ln -s /app/tftp/pxelinux.cfg/join /app/tftp/pxelinux.cfg/default
+    ln -s /app/tftp/pxelinux.cfg/bootstrap /app/tftp/pxelinux.cfg/default
     echo "MODE SELECT: BOOTSTRAP MODE! (new cluster only!)"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
