@@ -43,12 +43,13 @@ python3 -u -m http.server 3000 &
 
 if [ $MODE = 'JOIN' ]
 then
+    ln -s /app/tftp/pxelinux.cfg/bootstrap /app/tftp/pxelinux.cfg/default
     echo "MODE SELECT: JOIN MODE!"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
         --dhcp-no-overrid \
         --dhcp-boot=pxelinux.0,pxeserver,$pxe_server_ip \
-        --pxe-service=x86PC,"Join existing CoreOS Cluster",pxejoin \
+        --pxe-service=x86PC,"Join existing CoreOS Cluster",pxelinux \
         --enable-tftp \
         --tftp-root=/app/tftp \
         --user=root \
@@ -57,12 +58,13 @@ fi
 
 if [ $MODE = 'BOOTSTRAP' ]
 then
+    ln -s /app/tftp/pxelinux.cfg/join /app/tftp/pxelinux.cfg/default
     echo "MODE SELECT: BOOTSTRAP MODE! (new cluster only!)"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \
         --dhcp-no-overrid \
-        --dhcp-boot=pxelinux.0,bootstrap,$pxe_server_ip \
-        --pxe-service=x86PC,"Bootstrap CoreOS Cluster",bootstrap \
+        --dhcp-boot=pxelinux.0,pxeserver,$pxe_server_ip \
+        --pxe-service=x86PC,"Bootstrap CoreOS Cluster",pxelinux \
         --enable-tftp \
         --tftp-root=/app/tftp \
         --user=root \
