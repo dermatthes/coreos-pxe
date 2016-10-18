@@ -4,6 +4,7 @@ import sys
 import subprocess
 import http.server
 import socketserver
+import base64
 
 PORT = 8000
 ETCD_TOKEN_FILE = "etcd_discovery_token"
@@ -12,6 +13,8 @@ work_dir = sys.argv[1]
 server_ip = sys.argv[2]
 port = int(sys.argv[3])
 rsa_public_key = sys.argv[4]
+int_rsa_public_key = sys.argv[5]
+int_rsa_private_key = sys.argv[6]
 
 try:
     with open(work_dir + "/" + ETCD_TOKEN_FILE, "r") as f:
@@ -49,6 +52,8 @@ class PxeHandler(http.server.SimpleHTTPRequestHandler):
                 "client_ip_dash": self.client_address[0].replace(".", "-"),
                 "etcd_discovery_token": etcd_discovery_token,
                 "rsa_public_key": rsa_public_key,
+                "int_rsa_public_key": int_rsa_public_key,
+                "int_rsa_private_key": base64.b64encode(int_rsa_private_key),
         }
         self.wfile.write(bytes(template % options, "utf-8"))
 

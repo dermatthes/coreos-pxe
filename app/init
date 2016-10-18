@@ -6,6 +6,13 @@ pxe_server_ip=$(ifconfig $INTERFACE | grep 'inet addr:' | cut -d: -f2 | awk '{pr
 
 rsa_public_key=$(cat /app/rsa_public_key)
 
+if [ $MODE = 'BOOTSTRAP' ]
+then
+    echo "BOOTSTRAP-MODE: Creating new ssh key pair for inter cluster communication"
+    ssh-keygen
+fi
+
+
 echo Server IP: $pxe_server_ip
 
 # Update discovery token, bootstrap with 3 nodes
@@ -24,7 +31,7 @@ sed -i -e s/%\(server_ip\)s/$pxe_server_ip/ /app/tftp/pxelinux.cfg/*
 
 echo "Starting python cloudconfig webserver (make sure to block outside requests to port 888)"
 # Start http server to host cloud.config
-python3 -u /app/httpd.py /app/config $pxe_server_ip 888 "$rsa_public_key" &
+python3 -u /app/httpd.py /app/config $pxe_server_ip 888 "$rsa_public_key" "$(cat /root/.ssh/id_rsa.pub)" "$(cat /root/.ssh/id_rsa)" &
 
 # Download image
 if [ ! -d /config/images ];then
@@ -71,3 +78,4 @@ then
         --no-daemon
 fi
 
+echo "ERROR: No MODE selected!"
