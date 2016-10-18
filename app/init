@@ -32,8 +32,7 @@ sed -i -e s/%\(server_ip\)s/$pxe_server_ip/ /app/tftp/pxelinux.cfg/*
 
 echo "Starting python cloudconfig webserver (make sure to block outside requests to port 888)"
 # Start http server to host cloud.config
-python3 -u /app/httpd.py /app/config $pxe_server_ip 888 "$rsa_public_key" "$(cat /root/.ssh/id_rsa.pub)" "$(cat /root/.ssh/id_rsa)" &
-
+export WORK_DIR="/app/config"
 export SERVER_IP=$pxe_server_ip
 export DISCOVERY_TOKEN=$(cat /app/config/etcd_discovery_token)
 export PUBLIC_KEY_FILE="/app/rsa_public_key"
@@ -85,11 +84,6 @@ then
         --tftp-root=/app/tftp \
         --user=root \
         --no-daemon
-fi
-
-if [ $MODE = 'CONSOLE' ]
-then
-     /bin/bash
 fi
 
 echo "ERROR: No MODE selected!"

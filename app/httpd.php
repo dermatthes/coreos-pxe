@@ -9,7 +9,8 @@
 
     $requestUri = $_SERVER["REQUEST_URI"];
 
-
+    $workDir = $_ENV["WORK_DIR"];
+    $requestUri = $workDir . "/" . $requestUri;
 
     $remoteAddr = $_SERVER["REMOTE_ADDR"];
     $serverIp = $_ENV["SERVER_IP"];
