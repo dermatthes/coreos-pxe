@@ -46,4 +46,4 @@
     header ("Content-Type: text/plain;");
     echo $data;
 
-    file_put_contents("php://stdout", "\nS: 200 $requestUri");
+    file_put_contents("php://stdout", "\nS: 200 $requestUri\n--Data--\n$data\n--/Data--");
