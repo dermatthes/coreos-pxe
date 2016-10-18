@@ -49,7 +49,16 @@ ssh core@<ip>
 
 ### Switching to Cloud-Powered service:
 
+
+
 Login to first node and execute (as root)
+
+```
+eval `ssh-agent -s`
+ssh-add
+```
+
+after that you can use `fleetctl`:
 
 ```
 fleetctl start /bootpxe/coreos-pxe.service

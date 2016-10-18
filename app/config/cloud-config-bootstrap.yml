@@ -20,12 +20,27 @@ ssh_authorized_keys:
   - %(rsa_public_key)s
   - %(int_rsa_public_key)s
 
+users:
+  - name: "root"
+    ssh-authorized-keys:
+       - %(rsa_public_key)s
+       - %(int_rsa_public_key)s
+
+
 write_files:
   - path: "/root/.ssh/id_rsa"
     owner: "root"
     permissions: "0600"
     encoding: "base64"
     content: %(int_rsa_private_key)s
+
+write_files:
+  - path: "/home/core/.ssh/id_rsa"
+    owner: "core"
+    permissions: "0600"
+    encoding: "base64"
+    content: %(int_rsa_private_key)s
+
 
 write_files:
   - path: "/root/.ssh/id_rsa.pub"

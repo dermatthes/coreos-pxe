@@ -9,7 +9,7 @@ echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ tr
 echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
 # Install deps
-RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client
+RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client php5-cli
 
 COPY app /app
 

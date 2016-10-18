@@ -25,9 +25,9 @@
             "client_ip" => $remoteAddr,
             "client_ip_dash" => str_replace(".", "-", $remoteAddr),
             "etcd_discovery_token" => $discoveryToken,
-            "rsa_public_key" => file_get_contents($publicKeyFile),
-            "int_rsa_public_key" => file_get_contents($intPrivateKeyFile),
-            "int_rsa_private_key" => base64_encode(file_get_contents($intPrivateKeyFile)),
+            "rsa_public_key" => trim (file_get_contents($publicKeyFile)),
+            "int_rsa_public_key" => trim (file_get_contents($intPublicKeyFile)),
+            "int_rsa_private_key" => trim (base64_encode(file_get_contents($intPrivateKeyFile))),
     ];
 
 
