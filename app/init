@@ -33,6 +33,14 @@ echo "Starting python cloudconfig webserver (make sure to block outside requests
 # Start http server to host cloud.config
 python3 -u /app/httpd.py /app/config $pxe_server_ip 888 "$rsa_public_key" "$(cat /root/.ssh/id_rsa.pub)" "$(cat /root/.ssh/id_rsa)" &
 
+export SERVER_IP=$pxe_server_ip
+export DISCOVERY_TOKEN=$(cat /app/config/etcd_discovery_token)
+export PUBLIC_KEY_FILE="/app/rsa_public_key"
+export INT_PRIVATE_KEY_FILE="/root/.ssh/id_rsa"
+export INT_PUBLIC_KEY_FILE="/root/.ssh/id_rsa.pub"
+php -d variables_order=EGPCS -S $pxe_server_ip:888 httpd.php
+
+
 # Download image
 if [ ! -d /config/images ];then
     echo "Downloading CoreOS images"
