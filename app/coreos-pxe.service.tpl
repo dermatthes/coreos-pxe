@@ -1,3 +1,6 @@
+; TEMPLATE ONLY
+; SEE cloud-config-*.yml for real config!
+
 [Unit]
 Description=CoreOSPxeAnnouncing
 After=docker.service
