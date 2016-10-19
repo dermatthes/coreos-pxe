@@ -12,7 +12,7 @@ echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ tr
 RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client php5-cli
 
 COPY app /app
-COPY services /services
+COPY oem /oem
 
 # Install pxelinux.0
 RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
@@ -21,6 +21,13 @@ RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
 RUN cd /app/tftp && \
     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz && \
     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz
+
+
+# Pack all files located under /oem into cpio to extend the boot-image
+
+RUN cd /oem && find . | cpio -ov > /app/tftp/cloudpxe-oem.cpio && gzip /app/tftp/cloudpxe-oem.cpio
+
+
 
 #     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz.sig && \
 #     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz.sig && \
