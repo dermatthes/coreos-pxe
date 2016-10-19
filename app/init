@@ -53,9 +53,6 @@ if [ ! -d /config/images ];then
     echo "Downloading images finished."
 fi
 
-# Host images
-cd /config/images
-python3 -u -m http.server 3000 &
 
 # Start dnsmasq as dhcp proxy to $pxe_server_ip
 
