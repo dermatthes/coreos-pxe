@@ -9,7 +9,7 @@ echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ tr
 echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
 # Install deps
-RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client php5-cli
+RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client php5-cli squashfs-tools
 
 COPY app /app
 COPY oem /oem
@@ -17,19 +17,30 @@ COPY oem /oem
 # Install pxelinux.0
 RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
 
+# Import CoreOS Signing Key
+RUN wget -qO- https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.pem | gpg --import
+
 # Install coreos pxe images
 RUN cd /app/tftp && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz
+    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz && \
+    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz.sig && \
+    gpg --verify coreos_production_pxe.vmlinuz.sig
 
 # Download image to /tmp
 RUN cd /tmp && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz
+    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz && \
+    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz.sig && \
+    gpg --verify coreos_production_pxe_image.cpio.gz.sig
 
 # Extract and combine with /oem
 RUN mkdir /tmp/initrd && \
     cd /tmp/initrd && \
     cat /tmp/coreos_production_pxe_image.cpio.gz | gzip -d | cpio -i && \
-    cp -R /oem/* . && \
+    unsquashfs -f -d ./tttmp usr.squashfs && \
+    cp -R /oem/* ./tttmp && \
+    rm usr.squashfs && \
+    mksquashfs ./tttmp ./usr.squashfs && \
+    rm -R tttmp && \
     find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
 
 # Cleanup
@@ -46,11 +57,6 @@ RUN cd /tmp && rm -R *
 #     gpg --verify coreos_production_pxe.vmlinuz.sig && \
 #     gpg --verify coreos_production_pxe_image.cpio.gz.sig
 
-
-# RUN chmod 644 pxe/pxelinux.cfg/default && \
-#     chmod 644 pxe/pxelinux.0 && \
-#     chmod 644 pxe/coreos_production_pxe_image.cpio.gz && \
-#     chmod 644 pxe/coreos_production_pxe.vmlinuz
 
 # Customizations
 ENV INTERFACE=eth1
