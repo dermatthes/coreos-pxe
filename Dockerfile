@@ -39,6 +39,7 @@ RUN mkdir /tmp/initrd && \
     unsquashfs -f -d ./tttmp usr.squashfs && \
     cp -R /oem/* ./tttmp && \
     rm usr.squashfs && \
+    echo "Wurst" > ./tttmp/lalelu && \
     mksquashfs ./tttmp ./usr.squashfs && \
     rm -R tttmp && \
     find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
