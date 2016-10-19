@@ -20,12 +20,23 @@ RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
 # Install coreos pxe images
 RUN cd /app/tftp && \
     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz && \
+
+# Download image to /tmp
+RUN cd /tmp && \
     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz
 
+# Extract and combine with /oem
+RUN mdkir /tmp/initrd && \
+    cd /tmp/initrd && \
+    cat /tmp/coreos_production_pxe_image.cpio.gz | gzip -d | cpio -i && \
+    cp -R /oem . \
+    find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
 
-# Pack all files located under /oem into cpio to extend the boot-image
+# Cleanup
+RUN cd /tmp && rm -R *
 
-RUN cd /oem && find . | cpio -o --format=newc | gzip -9c > /app/tftp/cloudpxe_oem.cpio.gz
+
+
 
 
 
