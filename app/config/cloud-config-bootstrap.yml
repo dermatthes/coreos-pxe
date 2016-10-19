@@ -28,7 +28,7 @@ users:
     ssh-authorized-keys:
        - %(rsa_public_key)s
        - %(int_rsa_public_key)s
-
+hostname: coreos-%(client_ip_dash)s
 
 write_files:
   - path: "/root/.ssh/id_rsa"
@@ -73,5 +73,23 @@ write_files:
       ExecStart=/usr/bin/docker run --net=host -e MODE=WORKERJOIN -e INTERFACE=enp8s0 -v /bootpxe/rsa_public_key:/app/rsa_public_key -v /root/.ssh/id_rsa:/root/.ssh/id_rsa -v /root/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub --name coreos-pxe dermatthes/coreos-pxe
       ExecStop=/usr/bin/docker stop coreos-pxe
 
+write_files:
+  - path: "/bootpxe/restart-on-failure.service"
+    content: |
+      [Unit]
+      Description=Restart Node if connection to cluster is lost
+      After=etcd2.service
+      Requires=etcd2.service
 
-hostname: coreos-%(client_ip_dash)s
+      [Service]
+      TimeoutStartSec=0
+      ExecStart=/usr/bin/bash -c "while true; do sleep 10; fleetctl list-machines > /dev/null  || (  logger System 'ERROR. Disconnected from etcd2 cluster - restarting in 30s'; echo e > /proc/sysrq-trigger ; sleep 30; reboot; ) done;"
+
+      [X-Fleet]
+      Global=true
+
+runcmd:
+  - fleetctl start /bootpxe/coreos-pxe.service
+  - fleetctl start /restart-on-failure.service
+
+
