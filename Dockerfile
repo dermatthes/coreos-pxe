@@ -26,7 +26,7 @@ RUN cd /tmp && \
     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz
 
 # Extract and combine with /oem
-RUN mdkir /tmp/initrd && \
+RUN mkdir /tmp/initrd && \
     cd /tmp/initrd && \
     cat /tmp/coreos_production_pxe_image.cpio.gz | gzip -d | cpio -i && \
     cp -R /oem . && \
