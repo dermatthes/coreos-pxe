@@ -90,6 +90,6 @@ write_files:
 
 runcmd:
   - fleetctl start /bootpxe/coreos-pxe.service
-  - fleetctl start /restart-on-failure.service
+  - fleetctl start /bootpxe/restart-on-failure.service
 
 
