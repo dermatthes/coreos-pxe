@@ -44,16 +44,6 @@ export INT_PUBLIC_KEY_FILE="/root/.ssh/id_rsa.pub"
 php -d variables_order=EGPCS -S $pxe_server_ip:888 /app/httpd.php &
 
 
-# Download image
-if [ ! -d /config/images ];then
-    echo "Downloading CoreOS images"
-    mkdir -p /config/images/current
-    wget -nv http://stable.release.core-os.net/amd64-usr/current/coreos_production_image.bin.bz2
-    wget -nv http://stable.release.core-os.net/amd64-usr/current/coreos_production_image.bin.bz2.sig
-    echo "Downloading images finished."
-fi
-
-
 # Start dnsmasq as dhcp proxy to $pxe_server_ip
 
 if [ $MODE = 'WORKERJOIN' ]
