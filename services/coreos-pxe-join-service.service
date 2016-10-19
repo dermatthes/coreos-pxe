@@ -19,4 +19,4 @@ ExecStart=/usr/bin/bash -c "                                          \
                                                                       \
   systemctl stop etcd2;                                               \
   rm -rf /var/lib/etcd2/proxy;                                        \
-  /usr/bin/etcd2
+  /usr/bin/etcd2"

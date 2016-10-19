@@ -1,0 +1,23 @@
+[Unit]
+Description=Restart Node if connection to cluster is lost
+After=etcd2.service
+Requires=etcd2.service
+
+[Service]
+TimeoutStartSec=0
+
+ExecStart=/bin/bin/bash -c "                                        \
+    while true; do                                                  \
+        sleep 10;                                                    \
+        curl -Ls http://localhost:2379/health > /dev/null  || (     \
+            echo "ERROR. Disconnected from etcd2 cluster - restarting in 30s"  \
+            ifdown enp8s0;                                          \
+            sleep 5;                                                \
+            reboot;                                                 \
+        );                                                          \
+    done; "
+
+
+
+[X-Fleet]
+Global=true

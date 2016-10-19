@@ -12,6 +12,7 @@ echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ tr
 RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client php5-cli
 
 COPY app /app
+COPY services /services
 
 # Install pxelinux.0
 RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
