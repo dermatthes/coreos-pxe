@@ -29,7 +29,7 @@ RUN cd /tmp && \
 RUN mdkir /tmp/initrd && \
     cd /tmp/initrd && \
     cat /tmp/coreos_production_pxe_image.cpio.gz | gzip -d | cpio -i && \
-    cp -R /oem . \
+    cp -R /oem . && \
     find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
 
 # Cleanup
