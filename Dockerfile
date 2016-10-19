@@ -25,7 +25,7 @@ RUN cd /app/tftp && \
 
 # Pack all files located under /oem into cpio to extend the boot-image
 
-RUN cd /oem && find . | cpio -ov > /app/tftp/cloudpxe-oem.cpio && gzip /app/tftp/cloudpxe-oem.cpio
+RUN cd /oem && find . | cpio -o --format=newc | gzip -9c > /app/tftp/cloudpxe_oem.cpio.gz
 
 
 
