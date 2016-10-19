@@ -59,9 +59,9 @@ python3 -u -m http.server 3000 &
 
 # Start dnsmasq as dhcp proxy to $pxe_server_ip
 
-if [ $MODE = 'JOIN' ]
+if [ $MODE = 'WORKERJOIN' ]
 then
-    ln -s /app/tftp/pxelinux.cfg/join /app/tftp/pxelinux.cfg/default
+    ln -s /app/tftp/pxelinux.cfg/workerjoin /app/tftp/pxelinux.cfg/default
     echo "MODE SELECT: JOIN MODE!"
     dnsmasq \
         --dhcp-range=$pxe_server_ip,proxy \

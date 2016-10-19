@@ -10,7 +10,10 @@ coreos:
     # legacy ports can be omitted if your application doesn't depend on them
     listen-client-urls: "http://0.0.0.0:2379,http://0.0.0.0:4001"
     listen-peer-urls: "http://%(client_ip)s:2380,http://%(client_ip)s:7001"
-  
+
+  fleet:
+     metadata: "role=service"
+
   units:
     - name: etcd2.service
       command: start
@@ -67,7 +70,7 @@ write_files:
       ExecStartPre=-/usr/bin/docker kill coreos-pxe
       ExecStartPre=-/usr/bin/docker rm coreos-pxe
       ExecStartPre=/usr/bin/docker pull dermatthes/coreos-pxe
-      ExecStart=/usr/bin/docker run --net=host -e MODE=JOIN -e INTERFACE=enp8s0 -v /bootpxe/rsa_public_key:/app/rsa_public_key -v /root/.ssh/id_rsa:/root/.ssh/id_rsa -v /root/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub --name coreos-pxe dermatthes/coreos-pxe
+      ExecStart=/usr/bin/docker run --net=host -e MODE=WORKERJOIN -e INTERFACE=enp8s0 -v /bootpxe/rsa_public_key:/app/rsa_public_key -v /root/.ssh/id_rsa:/root/.ssh/id_rsa -v /root/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub --name coreos-pxe dermatthes/coreos-pxe
       ExecStop=/usr/bin/docker stop coreos-pxe
 
 

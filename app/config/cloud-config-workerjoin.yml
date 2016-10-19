@@ -2,17 +2,13 @@
 
 coreos:
   etcd2:
-    # skip discovery token
-    discovery: ""
-    advertise-client-urls: "http://%(client_ip)s:2379"
-    initial-advertise-peer-urls: "http://%(client_ip)s:2380"
-    # listen on both the official ports and the legacy ports
-    # legacy ports can be omitted if your application doesn't depend on them
-    listen-client-urls: "http://0.0.0.0:2379,http://0.0.0.0:4001"
-    listen-peer-urls: "http://%(client_ip)s:2380,http://%(client_ip)s:7001"
-    initial-cluster: "infra0=http://%(server_ip)s:2380"
-    initial-cluster-state: "existing"
-    name: "coreos-%(client_ip_dash)s"
+    proxy: on
+    listen-client-urls: http://localhost:2379
+    initial-cluster: etcdserver=http://%(server_ip)s:2380
+
+  fleet:
+    metadata: "role=worker"
+    etcd_servers: "http://localhost:2379"
   
   units:
     - name: etcd2.service
