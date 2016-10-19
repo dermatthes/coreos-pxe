@@ -41,7 +41,7 @@ RUN mkdir /tmp/initrd && \
     rm usr.squashfs && \
     echo "Wurst" > ./tttmp/lalelu && \
     mksquashfs ./tttmp ./usr.squashfs && \
-    rm -R tttmp && \
+    rm -R ./tttmp && \
     find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
 
 # Cleanup
