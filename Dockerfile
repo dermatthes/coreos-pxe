@@ -19,7 +19,7 @@ RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
 
 # Install coreos pxe images
 RUN cd /app/tftp && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz && \
+    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz
 
 # Download image to /tmp
 RUN cd /tmp && \
