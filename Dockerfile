@@ -48,6 +48,7 @@ RUN mkdir /tmp/initrd && \
 RUN cd /tmp && rm -R *
 
 
+RUN cd /app/httpd && rm -R ./vendor
 # Install libraries
 
 RUN cd /app/httpd && composer update
