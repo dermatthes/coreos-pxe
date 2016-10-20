@@ -4,7 +4,7 @@ coreos:
   etcd2:
     proxy: on
     listen-client-urls: http://localhost:2379
-    initial-cluster: etcdserver=http://{{ ENV("PXE_SERVER_IP")}}:2380
+    initial-cluster: etcdserver=http://{{ ENV("PXE_SERVER_IP") }}:2380
 
   fleet:
     metadata: "role=worker"

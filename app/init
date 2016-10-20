@@ -25,7 +25,7 @@ sed -i -e s/%\(server_ip\)s/$PXE_SERVER_IP/ /app/tftp/pxelinux.cfg/*
 echo "Starting python cloudconfig webserver (make sure to block outside requests to port 888)"
 # Start http server to host cloud.config
 
-cd /app/httpd/runHttpd.sh &
+cd /app/httpd/&& ./runHttpd.sh &
 
 
 # Start dnsmasq as dhcp proxy to $pxe_server_ip
