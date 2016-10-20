@@ -10,12 +10,12 @@ MAINTAINER Matthias Leuffen <matthes@leuffen.de>
 
 # Install deps
 #RUN apt-get update && apt-get install -y dnsmasq pxelinux wget openssh-server openssh-client php7.0-cli php7.0-zip squashfs-tools composer cpio net-tools
-RUN apt-get update && apt-get install -y dnsmasq pxelinux syslinux wget php7.0-cli php7.0-zip composer net-tools
+RUN apt-get update && apt-get install -y dnsmasq pxelinux syslinux wget php7.0-cli php7.0-zip composer net-tools openssh-client
 
 COPY app /app
 COPY oem /oem
 
-# Install pxelinux.0
+# Install pxelinux.0 AND ldlinux.c32 for network boot
 RUN mkdir app/tftp && cp /usr/lib/PXELINUX/pxelinux.0 /app/tftp && cp /usr/lib/syslinux/modules/bios/ldlinux.c32 /app/tftp
 
 # Import CoreOS Signing Key

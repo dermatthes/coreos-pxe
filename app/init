@@ -10,6 +10,11 @@ if [ $MODE = 'BOOTSTRAP' ]
 then
     echo "BOOTSTRAP TOKEN"
     wget "https://discovery.etcd.io/new?size=3" -O /app/config/etcd_discovery_token
+
+    echo "BOOTSTRAP-MODE: Creating new ssh key pair for inter cluster communication"
+    ssh-keygen -b 2048 -t rsa -f /app/id_rsa -q -N ""
+    echo "KEYGEN DONE!"
+
 fi
 
 
