@@ -4,7 +4,7 @@ coreos:
   etcd2:
     proxy: on
     listen-client-urls: http://localhost:2379
-    initial-cluster: etcdserver=http://%(server_ip)s:2380
+    initial-cluster: etcdserver=http://{{ ENV("PXE_SERVER_IP")}}:2380
 
   fleet:
     metadata: "role=worker"
@@ -16,42 +16,9 @@ coreos:
     - name: fleet.service
       command: start
 
-users:
-  - name: "root"
-    ssh-authorized-keys:
-       - %(rsa_public_key)s
-       - %(int_rsa_public_key)s
 
-ssh_authorized_keys:
-  - %(rsa_public_key)s
-  - %(int_rsa_public_key)s
-
-write_files:
-  - path: "/root/.ssh/id_rsa"
-    owner: "root"
-    permissions: "0600"
-    encoding: "base64"
-    content: %(int_rsa_private_key)s
-
-write_files:
-  - path: "/home/core/.ssh/id_rsa"
-    owner: "core"
-    permissions: "0600"
-    encoding: "base64"
-    content: %(int_rsa_private_key)s
-
-write_files:
-  - path: "/root/.ssh/id_rsa.pub"
-    owner: "root"
-    permissions: "00644"
-    content: %(int_rsa_public_key)s
-
-write_files:
-  - path: "/bootpxe/etcd_discovery_token"
-    content: %(etcd_discovery_token)s
-write_files:
-  - path: "/bootpxe/rsa_public_key"
-    content: %(rsa_public_key)s
+{{ INCLUDE("_inc/hostname.yml") }}
+{{ INCLUDE("_inc/ssh_authorized_keys.yml") }}
+{{ INCLUDE("_inc/files.yml") }}
 
 
-hostname: coreos-%(client_ip_dash)s

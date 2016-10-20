@@ -3,13 +3,13 @@
 coreos:
   etcd2:
     # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
-    discovery: %(etcd_discovery_token)s
-    advertise-client-urls: "http://%(client_ip)s:2379"
-    initial-advertise-peer-urls: "http://%(client_ip)s:2380"
+    discovery: {{ TRIM(FILE("/app/config/etcd_discovery_token")) }}
+    advertise-client-urls: "http://{{ REMOTE_IP() }}:2379"
+    initial-advertise-peer-urls: "http://{{ REMOTE_IP() }}:2380"
     # listen on both the official ports and the legacy ports
     # legacy ports can be omitted if your application doesn't depend on them
     listen-client-urls: "http://0.0.0.0:2379,http://0.0.0.0:4001"
-    listen-peer-urls: "http://%(client_ip)s:2380,http://%(client_ip)s:7001"
+    listen-peer-urls: "http://{{ REMOTE_IP() }}:2380,http://{{ REMOTE_IP() }}:7001"
 
   fleet:
      metadata: "role=service"
@@ -19,77 +19,12 @@ coreos:
       command: start
     - name: fleet.service
       command: start
-ssh_authorized_keys:
-  - %(rsa_public_key)s
-  - %(int_rsa_public_key)s
 
-users:
-  - name: "root"
-    ssh-authorized-keys:
-       - %(rsa_public_key)s
-       - %(int_rsa_public_key)s
-hostname: coreos-%(client_ip_dash)s
-
-write_files:
-  - path: "/root/.ssh/id_rsa"
-    owner: "root"
-    permissions: "0600"
-    encoding: "base64"
-    content: %(int_rsa_private_key)s
-
-write_files:
-  - path: "/home/core/.ssh/id_rsa"
-    owner: "core"
-    permissions: "0600"
-    encoding: "base64"
-    content: %(int_rsa_private_key)s
+{{ INCLUDE("_inc/hostname.yml") }}
+{{ INCLUDE("_inc/ssh_authorized_keys.yml") }}
+{{ INCLUDE("_inc/files.yml") }}
 
 
-write_files:
-  - path: "/root/.ssh/id_rsa.pub"
-    owner: "root"
-    permissions: "00644"
-    content: %(int_rsa_public_key)s
 
-write_files:
-  - path: "/bootpxe/etcd_discovery_token"
-    content: %(etcd_discovery_token)s
-write_files:
-  - path: "/bootpxe/rsa_public_key"
-    content: %(rsa_public_key)s
-write_files:
-  - path: "/bootpxe/coreos-pxe.service"
-    content: |
-      [Unit]
-      Description=CoreOSPxeAnnouncing
-      After=docker.service
-      Requires=docker.service
-
-      [Service]
-      TimeoutStartSec=0
-      ExecStartPre=-/usr/bin/docker kill coreos-pxe
-      ExecStartPre=-/usr/bin/docker rm coreos-pxe
-      ExecStartPre=/usr/bin/docker pull dermatthes/coreos-pxe
-      ExecStart=/usr/bin/docker run --net=host -e MODE=WORKERJOIN -e INTERFACE=enp8s0 -v /bootpxe/rsa_public_key:/app/rsa_public_key -v /root/.ssh/id_rsa:/root/.ssh/id_rsa -v /root/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub --name coreos-pxe dermatthes/coreos-pxe
-      ExecStop=/usr/bin/docker stop coreos-pxe
-
-write_files:
-  - path: "/bootpxe/restart-on-failure.service"
-    content: |
-      [Unit]
-      Description=Restart Node if connection to cluster is lost
-      After=etcd2.service
-      Requires=etcd2.service
-
-      [Service]
-      TimeoutStartSec=0
-      ExecStart=/usr/bin/bash -c "while true; do sleep 10; fleetctl list-machines > /dev/null  || (  logger System 'ERROR. Disconnected from etcd2 cluster - restarting in 30s'; echo e > /proc/sysrq-trigger ; sleep 30; reboot; ) done;"
-
-      [X-Fleet]
-      Global=true
-
-runcmd:
-  - fleetctl start /bootpxe/coreos-pxe.service
-  - fleetctl start /bootpxe/restart-on-failure.service
 
 

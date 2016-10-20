@@ -1,5 +1,6 @@
 {
     "require": {
-        "cloud/cloudtool": "^1.0"
-    }
+        "cloud/cloudtool": "*"
+    },
+    "minimum-stability": "dev"
 }

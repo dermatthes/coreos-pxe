@@ -1,21 +1,21 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER Matthias Leuffen <matthes@leuffen.de>
 
-RUN echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/  trusty main restricted universe multiverse" > /etc/apt/sources.list && \
-echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/  trusty-security main restricted universe multiverse" >> /etc/apt/sources.list && \
-echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
-echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-proposed main restricted universe multiverse" >> /etc/apt/sources.list && \
-echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
+#RUN echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/  trusty main restricted universe multiverse" > /etc/apt/sources.list && \
+#echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/  trusty-security main restricted universe multiverse" >> /etc/apt/sources.list && \
+#echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+#echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-proposed main restricted universe multiverse" >> /etc/apt/sources.list && \
+#echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
 # Install deps
-RUN apt-get update && apt-get install -y dnsmasq syslinux wget openssh-server openssh-client php5-cli squashfs-tools
+RUN apt-get update && apt-get install -y dnsmasq pxelinux wget openssh-server openssh-client php7.0-cli squashfs-tools composer cpio
 
 COPY app /app
 COPY oem /oem
 
 # Install pxelinux.0
-RUN mkdir app/tftp && cp /usr/lib/syslinux/pxelinux.0 /app/tftp
+RUN mkdir app/tftp && cp /usr/lib/PXELINUX/pxelinux.0 /app/tftp
 
 # Import CoreOS Signing Key
 RUN wget -qO- https://coreos.com/security/image-signing-key/CoreOS_Image_Signing_Key.pem | gpg --import
@@ -32,6 +32,7 @@ RUN cd /tmp && \
     wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz.sig && \
     gpg --verify coreos_production_pxe_image.cpio.gz.sig
 
+
 # Extract and combine with /oem
 RUN mkdir /tmp/initrd && \
     cd /tmp/initrd && \
@@ -47,6 +48,9 @@ RUN mkdir /tmp/initrd && \
 RUN cd /tmp && rm -R *
 
 
+# Install libraries
+
+RUN cd /app/httpd && composer update
 
 
 
