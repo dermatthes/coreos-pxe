@@ -1,0 +1,5 @@
+{
+    "require": {
+        "cloud/cloudtool": "^1.0"
+    }
+}
