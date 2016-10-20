@@ -9,7 +9,8 @@ MAINTAINER Matthias Leuffen <matthes@leuffen.de>
 #echo "deb http://vesta.informatik.rwth-aachen.de/ftp/pub/Linux/ubuntu/ubuntu/ trusty-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
 # Install deps
-RUN apt-get update && apt-get install -y dnsmasq pxelinux wget openssh-server openssh-client php7.0-cli php7.0-zip squashfs-tools composer cpio net-tools
+#RUN apt-get update && apt-get install -y dnsmasq pxelinux wget openssh-server openssh-client php7.0-cli php7.0-zip squashfs-tools composer cpio net-tools
+RUN apt-get update && apt-get install -y dnsmasq pxelinux wget php7.0-cli php7.0-zip composer net-tools
 
 COPY app /app
 COPY oem /oem
@@ -34,15 +35,16 @@ RUN cd /tmp && \
 
 
 # Extract and combine with /oem
-RUN mkdir /tmp/initrd && \
-    cd /tmp/initrd && \
-    cat /tmp/coreos_production_pxe_image.cpio.gz | gzip -d | cpio -i && \
-    unsquashfs -f -d ./tttmp usr.squashfs && \
-    cp -R /oem/* ./tttmp && \
-    rm usr.squashfs && \
-    mksquashfs ./tttmp ./usr.squashfs && \
-    rm -R ./tttmp && \
-    find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
+#RUN mkdir /tmp/initrd && \
+#    cd /tmp/initrd && \
+#    cat /tmp/coreos_production_pxe_image.cpio.gz | gzip -d | cpio -i && \
+#    unsquashfs -f -d ./tttmp usr.squashfs && \
+#    cp -R /oem/* ./tttmp && \
+#    rm usr.squashfs && \
+#    mksquashfs ./tttmp ./usr.squashfs && \
+#    rm -R ./tttmp && \
+#    find | cpio -o --format=newc | gzip -9c > /app/tftp/coreos_production_pxe_image_oem.cpio.gz
+RUN mv /tmp/coreos_production_pxe_image.cpio.gz /app/tftp/coreos_production_pxe_image_oem.cpio.gz
 
 # Cleanup
 RUN cd /tmp && rm -R *
