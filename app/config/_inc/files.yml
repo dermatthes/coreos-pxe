@@ -6,6 +6,7 @@ write_files:
 write_files:
   - path: "/home/core/.ssh/id_rsa"
     encoding: b64
+    permissions: '0600'
     owner: core:root
     content: {{ BASE64_ENC(FILE("/app/id_rsa")) }}
 

@@ -37,6 +37,9 @@ docker pull dermatthes/coreos-pxe
 docker run --net=host -e MODE=BOOTSTRAP -e INTERFACE=eth2 -v /root/.ssh/id_rsa.pub:/app/rsa_public_key --name corepxe dermatthes/coreos-pxe
 ```
 
+This will create a initial cluster with 3 nodes. It will create a
+ssh private/publickey for inter cluster authentication (for user core)
+
 Then start the first node. Wait until its online. You'll see the 
 offers. 
 
