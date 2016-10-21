@@ -73,11 +73,11 @@ coreos:
         [Service]
         TimeoutStartSec=0
         Restart=always
-        ExecStartPre=-/usr/bin/docker stop cadvisor
+        ExecStartPre=-/usr/bin/docker kill cadvisor
         ExecStartPre=-/usr/bin/docker rm -f cadvisor
         ExecStartPre=-/usr/bin/docker pull google/cadvisor
-        ExecStart=docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor google/cadvisor
-
+        ExecStart=/usr/bin/docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor google/cadvisor
+        ExecStop=/usr/bin/docker stop cadvisor
         [Install]
         WantedBy=multi-user.target
 
