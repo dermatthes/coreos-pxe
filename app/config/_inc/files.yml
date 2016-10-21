@@ -1,5 +1,11 @@
 
 write_files:
+  -path: "/etc/environment"
+   content: |
+     COREOS_PRIVATE_IPV4={{ REMOTE_IP() }}
+
+
+write_files:
   - path: "/bootpxe/rsa_public_key"
     content: {{ TRIM(FILE("/app/rsa_public_key")) }}
 
