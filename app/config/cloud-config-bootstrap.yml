@@ -11,12 +11,16 @@ coreos:
     listen-client-urls: "http://{{ REMOTE_IP() }}:2379,http://{{ REMOTE_IP() }}:4001,http://127.0.0.1:2379,http://127.0.0.1:4001"
     listen-peer-urls: "http://{{ REMOTE_IP() }}:2380,http://{{ REMOTE_IP() }}:7001"
 
+  units:
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+
   fleet:
      metadata: "role=service"
 
 
-
-{{ INCLUDE("_inc/swarm.yml") }}
 {{ INCLUDE("_inc/hostname.yml") }}
 {{ INCLUDE("_inc/ssh_authorized_keys.yml") }}
 {{ INCLUDE("_inc/files.yml") }}
