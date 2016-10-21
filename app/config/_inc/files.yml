@@ -32,3 +32,21 @@ write_files:
       ExecStart=/usr/bin/docker run --net=host -e MODE=WORKERJOIN -e INTERFACE=enp8s0 -v /bootpxe/rsa_public_key:/app/rsa_public_key -v /home/core/.ssh/id_rsa:/app/id_rsa -v /home/core/.ssh/id_rsa.pub:/app/id_rsa.pub --name coreos-pxe dermatthes/coreos-pxe
       ExecStop=/usr/bin/docker stop coreos-pxe
 
+write_files:
+  - path: /bootpxe/docker-swarm.service
+    content: |
+      [Unit]
+      Description=Docker Swarm
+      After=docker.service
+      Requires=docker.service
+      Requires=etcd.service
+
+      [Service]
+      TimeoutStartSec=0
+      ExecStartPre=- docker swarm leave
+
+      ExecStart=docker run swarm join --addr=0.0.0.0:2375 etcd://127.0.0.1:2379/swarm
+      ExecStop=docker swarm leave
+
+      [X-Fleet]
+      Global=true

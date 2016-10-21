@@ -16,8 +16,10 @@ COPY app /app
 COPY oem /oem
 
 
-# Select CoreOS Channel - currently we need alpha for testing
+# Select CoreOS Channel - currently we need alpha for testing (alpha supports docker 1.12)
 ENV COREOS_CHANNEL alpha
+# ENV COREOS_CHANNEL stable
+
 
 # Install pxelinux.0 AND ldlinux.c32 for network boot
 RUN mkdir app/tftp && cp /usr/lib/PXELINUX/pxelinux.0 /app/tftp && cp /usr/lib/syslinux/modules/bios/ldlinux.c32 /app/tftp
