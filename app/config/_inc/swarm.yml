@@ -22,7 +22,7 @@ coreos:
         - name: 30-custom.conf
           content: |
             [Service]
-            Environment="DOCKER_OPTS=--cluster-advertise eth0:2375 --cluster-store etcd://$private_ipv4:2379"
+            Environment="DOCKER_OPTS=--cluster-advertise $private_ipv4:2375 --cluster-store etcd://$private_ipv4:2379"
 
     - name: swarm-agent.service
       command: start
