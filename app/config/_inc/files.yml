@@ -1,8 +1,8 @@
 
 write_files:
-  -path: "/etc/environment"
-   content: |
-     COREOS_PRIVATE_IPV4={{ REMOTE_IP() }}
+  - path: "/etc/environment"
+    content: |
+      COREOS_PRIVATE_IPV4={{ REMOTE_IP() }}
 
 
 write_files:
