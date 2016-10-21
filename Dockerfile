@@ -15,6 +15,10 @@ RUN apt-get update && apt-get install -y dnsmasq pxelinux syslinux wget php7.0-c
 COPY app /app
 COPY oem /oem
 
+
+# Select CoreOS Channel - currently we need alpha for testing
+ENV COREOS_CHANNEL alpha
+
 # Install pxelinux.0 AND ldlinux.c32 for network boot
 RUN mkdir app/tftp && cp /usr/lib/PXELINUX/pxelinux.0 /app/tftp && cp /usr/lib/syslinux/modules/bios/ldlinux.c32 /app/tftp
 
@@ -23,14 +27,14 @@ RUN wget -qO- https://coreos.com/security/image-signing-key/CoreOS_Image_Signing
 
 # Install coreos pxe images
 RUN cd /app/tftp && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz.sig && \
+    wget -q http://$COREOS_CHANNEL.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz && \
+    wget -q http://$COREOS_CHANNEL.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz.sig && \
     gpg --verify coreos_production_pxe.vmlinuz.sig
 
 # Download image to /tmp
 RUN cd /tmp && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz && \
-    wget -q http://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz.sig && \
+    wget -q http://$COREOS_CHANNEL.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz && \
+    wget -q http://$COREOS_CHANNEL.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz.sig && \
     gpg --verify coreos_production_pxe_image.cpio.gz.sig
 
 
