@@ -49,11 +49,12 @@ write_files:
 
       [Service]
       TimeoutStartSec=0
-      ExecStartPre=- docker swarm leave
+      Restart=always
+      ExecStartPre=- /usr/bin/docker stop swarm-agent
+      ExecStartPre=- /usr/bin/docker rm -f swarm-agent
+      ExecStartPre=- /usr/bin/docker pull swarm
+      ExecStart=/usr/bin/docker run --name=swarm-agent swarm join --addr=$COREOS_PRIVATE_IPV4:2375 etcd://$COREOS_PRIVATE_IPV4:2379/swarmnodes
 
-      ExecStart=docker run swarm join --addr=0.0.0.0:2375 etcd://127.0.0.1:2379/swarm
-      ExecStop=docker swarm leave
+      ExecStartStop=/usr/bin/docker stop swarm-agent
 
-      [X-Fleet]
-      Global=true
 

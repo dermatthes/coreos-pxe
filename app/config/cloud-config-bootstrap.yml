@@ -14,12 +14,9 @@ coreos:
   fleet:
      metadata: "role=service"
 
-  units:
-    - name: etcd2.service
-      command: start
-    - name: fleet.service
-      command: start
 
+
+{{ INCLUDE("_inc/swarm.yml") }}
 {{ INCLUDE("_inc/hostname.yml") }}
 {{ INCLUDE("_inc/ssh_authorized_keys.yml") }}
 {{ INCLUDE("_inc/files.yml") }}

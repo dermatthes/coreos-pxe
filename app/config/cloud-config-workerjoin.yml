@@ -10,11 +10,6 @@ coreos:
     metadata: "role=worker"
     etcd_servers: "http://localhost:2379"
   
-  units:
-    - name: etcd2.service
-      command: start
-    - name: fleet.service
-      command: start
 
 
 {{ INCLUDE("_inc/hostname.yml") }}
